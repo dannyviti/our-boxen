@@ -64,16 +64,33 @@ node default {
   }
 
   # node versions
-  include nodejs::v0_6
-  include nodejs::v0_8
   include nodejs::v0_10
 
   # default ruby versions
   ruby::version { '1.9.3': }
   ruby::version { '2.0.0': }
-  ruby::version { '2.1.0': }
-  ruby::version { '2.1.1': }
   ruby::version { '2.1.2': }
+
+  # python
+  include python
+
+  # java
+  include java
+
+  # go
+  include go
+
+  # Delete wfarr/chgo if it exists, since repository type does not distinguish
+  # when remote changes: https://github.com/boxen/puppet-go/pull/11
+  exec { "delete-wfarr-chgo":
+      provider => shell,
+      command  => "rm -rf ${boxen::config::home}/chgo",
+      onlyif   => "[[ -s ${boxen::config::home}/chgo ]] && cd ${boxen::config::home}/chgo && git remote -v | grep wfarr",
+      before   => Repository[$go::chgo_root],
+  }
+
+  # pin version
+  go::version { '1.3.1': }
 
   # common, useful packages
   package {
