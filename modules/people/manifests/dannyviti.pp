@@ -15,7 +15,6 @@ class people::dannyviti {
 
     #Communication
     include hipchat
-    include limechat
     include skype
     include twitterrific
 
